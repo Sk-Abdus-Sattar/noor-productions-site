@@ -5,8 +5,8 @@
 // ============================================================
 (function () {
   // ── CONFIG ──────────────────────────────────────────────────
-  var EMAILJS_PUBLIC_KEY  = "JsS_HIYQlBNniDhUK";
-  var EMAILJS_SERVICE_ID  = "Dream Boutique";
+  var EMAILJS_PUBLIC_KEY  = "ClwYWQKbEtb0O6Z7E";
+  var EMAILJS_SERVICE_ID  = "service_9r1xpqi";
   // EmailJS free plan caps you at 2 templates account-wide, and the other
   // slot is already used by Delhi Boutique's live order template — so this
   // reuses the same generic "template_to_client" as admin.html/reviews.js,

@@ -36,8 +36,8 @@ const firebaseConfig = {
 
 // EmailJS (emailjs.com free tier — no server needed).
 // See SETUP.md for how to create the account + these templates.
-const EMAILJS_PUBLIC_KEY    = "JsS_HIYQlBNniDhUK";
-const EMAILJS_SERVICE_ID    = "Dream Boutique";
+const EMAILJS_PUBLIC_KEY    = "ClwYWQKbEtb0O6Z7E";
+const EMAILJS_SERVICE_ID    = "service_9r1xpqi";
 // EmailJS free plan caps you at 2 templates account-wide, and the other
 // slot is already used by Delhi Boutique's live order template. So
 // everything here reuses ONE generic template — its "To Email" field is
