@@ -117,10 +117,61 @@ function renderReviews() {
 
 // ── Auth state ─────────────────────────────────────────────────
 let currentUser = null;
+const writeBtn = document.getElementById("write-feedback-btn");
+const writeNote = document.querySelector(".write-feedback-note");
+
+// Keeps the button label and helper text in sync with reality, so it's
+// never ambiguous whether clicking will start a new review or edit the
+// existing one (and whether any attempt is left at all).
+async function refreshWriteButtonState() {
+  if (!writeBtn) return;
+
+  if (!currentUser) {
+    writeBtn.innerHTML = 'WRITE A FEEDBACK <span class="deploy-arrow">&rarr;</span>';
+    writeBtn.disabled = false;
+    if (writeNote) writeNote.textContent = "To leave a review you must be a verified client, and signed up via Google.";
+    return;
+  }
+
+  try {
+    const key = emailKey(currentUser.email);
+    const [clientSnap, reviewSnap] = await Promise.all([
+      getDoc(doc(db, "verifiedClients", key)),
+      getDoc(doc(db, "reviews", key)),
+    ]);
+    const clientStatus = clientSnap.exists() ? clientSnap.data().status : null;
+
+    if (!reviewSnap.exists()) {
+      writeBtn.innerHTML = 'WRITE A FEEDBACK <span class="deploy-arrow">&rarr;</span>';
+      writeBtn.disabled = false;
+      if (writeNote) {
+        writeNote.textContent = (clientStatus === "active")
+          ? "You can leave one review — you'll be able to edit it once afterward."
+          : "This Google account isn't verified as a NOOR Productions client yet.";
+      }
+      return;
+    }
+
+    const editCount = reviewSnap.data().editCount || 0;
+    if (editCount < 1) {
+      writeBtn.innerHTML = 'EDIT YOUR REVIEW <span class="deploy-arrow">&rarr;</span>';
+      writeBtn.disabled = false;
+      if (writeNote) writeNote.textContent = "You've submitted your review — one edit is still available.";
+    } else {
+      writeBtn.innerHTML = "REVIEW SUBMITTED";
+      writeBtn.disabled = true;
+      if (writeNote) writeNote.textContent = "You've used your one review and your one edit — thank you for your feedback!";
+    }
+  } catch (e) {
+    console.error("Couldn't refresh feedback button state:", e);
+  }
+}
+
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   const signinBtn = document.getElementById("google-signin-btn");
   if (signinBtn) signinBtn.style.display = user ? "none" : "inline-flex";
+  refreshWriteButtonState();
 });
 
 document.getElementById("google-signin-btn")?.addEventListener("click", async () => {
@@ -248,6 +299,7 @@ submitBtn?.addEventListener("click", async () => {
       );
     }
     overlay.classList.remove("is-open");
+    refreshWriteButtonState();
   } catch (e) {
     console.error(e);
     goError("04");
