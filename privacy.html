@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — NOOR Productions</title>
+<meta name="description" content="Privacy Policy for NOOR Productions, a boutique web design and development agency.">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #060608;
+    --charcoal: #0e0e12;
+    --gold: #c9a15a;
+    --gold-bright: #f0cd7a;
+    --gold-dim: #6b5730;
+    --ink: #e8e4d8;
+    --mono-text: #9a9488;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* Nav */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.4rem clamp(1.25rem, 5vw, 3rem);
+    background: rgba(6, 6, 8, 0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(201, 161, 90, 0.12);
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .nav-logo {
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--gold);
+    border-radius: 3px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .nav-logo::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .nav-word {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .nav-back {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mono-text);
+    transition: color 0.25s ease;
+  }
+
+  .nav-back:hover { color: var(--gold-bright); }
+
+  /* Layout */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 14vh 1.5rem 8rem;
+  }
+
+  .breadcrumb {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mono-text);
+    margin-bottom: 3rem;
+  }
+
+  .breadcrumb a { color: var(--mono-text); transition: color 0.25s ease; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .breadcrumb span.sep { margin: 0 0.5em; color: var(--gold-dim); }
+  .breadcrumb span.current { color: var(--gold); }
+
+  .eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 5vw, 3rem);
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 1.4rem;
+  }
+
+  .updated {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--mono-text);
+    margin-bottom: 1rem;
+  }
+
+  .updated span { color: var(--gold); }
+
+  .intro-lede {
+    font-family: var(--font-body);
+    color: var(--mono-text);
+    line-height: 1.85;
+    font-size: 1.05rem;
+    margin: 2.5rem 0 1rem;
+  }
+
+  section.legal-section {
+    margin-top: 3.6rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(201, 161, 90, 0.14);
+  }
+
+  section.legal-section:first-of-type {
+    margin-top: 4rem;
+  }
+
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--ink);
+    margin-bottom: 1.1rem;
+  }
+
+  p {
+    font-family: var(--font-body);
+    color: var(--mono-text);
+    line-height: 1.85;
+    font-size: 1rem;
+    margin-bottom: 1.1rem;
+  }
+
+  p:last-child { margin-bottom: 0; }
+
+  ul {
+    margin: 0 0 1.1rem 1.3rem;
+    color: var(--mono-text);
+    line-height: 1.85;
+  }
+
+  li { margin-bottom: 0.4rem; }
+
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid rgba(201, 161, 90, 0.12);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    background: var(--charcoal);
+  }
+
+  footer p {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--mono-text);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  footer a {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    transition: color 0.25s ease;
+  }
+
+  footer a:hover { color: var(--gold-bright); }
+
+  @media (max-width: 600px) {
+    main { padding-top: 12vh; }
+    .nav-word { display: none; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-logo"></div>
+      <span class="nav-word">NOOR Productions</span>
+    </div>
+    <a href="index.html" class="nav-back">Back to Home</a>
+  </nav>
+
+  <main>
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span class="sep">/</span><span class="current">Privacy Policy</span>
+    </div>
+
+    <span class="eyebrow">Legal</span>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: <span>August 9, 2026</span></p>
+
+    <p class="intro-lede">Your privacy matters to us. This policy explains, in plain language, what information we collect through this website, why we collect it, and how it's handled.</p>
+
+    <section class="legal-section" id="introduction">
+      <span class="section-num">01</span>
+      <h2>Introduction</h2>
+      <p>This Privacy Policy covers how NOOR Productions collects, uses, and protects information gathered through our website — including our contact form and any client review or testimonial features. It applies to visitors, prospective clients, and clients who interact with our site.</p>
+      <p>By using this website, you agree to the practices described in this policy. If you have questions at any point, you're welcome to reach out through our contact page.</p>
+    </section>
+
+    <section class="legal-section" id="information-collected">
+      <span class="section-num">02</span>
+      <h2>What Information We Collect</h2>
+      <p>When you fill out our contact form, we collect the information you provide directly, which typically includes your <strong>name, email address, project details, and any message content</strong> you choose to share with us.</p>
+      <p>We do <strong>not</strong> collect or process any payment information directly through this website. Any invoicing or payment for projects is handled separately, through dedicated payment or invoicing tools, and is not part of the data collected by this site.</p>
+    </section>
+
+    <section class="legal-section" id="google-sign-in">
+      <span class="section-num">03</span>
+      <h2>Google Sign-In Data</h2>
+      <p>Our site includes a client review and testimonials feature that uses <strong>Google Sign-In</strong> to verify the identity of clients leaving reviews. If you choose to sign in with Google for this purpose, we receive basic profile information from your Google account — specifically your <strong>name, email address, and profile photo</strong>.</p>
+      <p>This information is used solely to confirm that a review is genuinely submitted by an identifiable client, and to display your name and photo alongside your review if you choose to publish one. We do not request or receive access to your emails, contacts, files, or any other Google account data beyond this basic profile information.</p>
+    </section>
+
+    <section class="legal-section" id="how-we-use">
+      <span class="section-num">04</span>
+      <h2>How We Use Your Information</h2>
+      <p>We use the information we collect to respond to your inquiries, discuss potential projects, and — where applicable — to verify the authenticity of client reviews submitted through Google Sign-In.</p>
+      <p>We do not sell, rent, or trade your personal information to third parties for marketing or any other purposes.</p>
+    </section>
+
+    <section class="legal-section" id="storage-security">
+      <span class="section-num">05</span>
+      <h2>Data Storage &amp; Security</h2>
+      <p>Data collected through this website is stored using <strong>Firebase and Google Cloud infrastructure</strong>, which employs industry-standard security practices to protect data in transit and at rest. While no method of transmission or storage is 100% secure, we take reasonable steps to safeguard the information you share with us.</p>
+    </section>
+
+    <section class="legal-section" id="cookies">
+      <span class="section-num">06</span>
+      <h2>Cookies &amp; Tracking</h2>
+      <p>This website currently uses minimal cookies, primarily those required for core functionality (such as maintaining your sign-in session for the review feature). We may, in the future, introduce analytics tools such as Google Analytics to better understand how visitors use our site. If we do, this policy will be updated accordingly, and any relevant consent mechanisms will be put in place.</p>
+    </section>
+
+    <section class="legal-section" id="third-party">
+      <span class="section-num">07</span>
+      <h2>Third-Party Services</h2>
+      <p>We rely on a small number of trusted third-party services to operate this website:</p>
+      <ul>
+        <li><strong>Google Sign-In / Firebase</strong> — used for client identity verification and secure data storage, as described above.</li>
+        <li><strong>A transactional email provider</strong> — used to deliver messages submitted through our contact form to our team.</li>
+      </ul>
+      <p>These providers process data on our behalf and are bound by their own privacy and security practices, which you can review directly on their respective websites.</p>
+    </section>
+
+    <section class="legal-section" id="retention">
+      <span class="section-num">08</span>
+      <h2>Data Retention</h2>
+      <p>We retain contact form submissions and review-related data for as long as necessary to respond to inquiries, maintain an accurate record of client testimonials, and meet any reasonable business or legal record-keeping needs. If you'd like your data removed sooner, you're welcome to request this at any time — see "Your Rights" below.</p>
+    </section>
+
+    <section class="legal-section" id="your-rights">
+      <span class="section-num">09</span>
+      <h2>Your Rights</h2>
+      <p>You have the right to request access to, correction of, or deletion of the personal data we hold about you. If you signed in via Google to leave a review, you also have the right to withdraw your consent and have your associated review data removed.</p>
+      <p>To exercise any of these rights, please contact us via email, and we'll respond and act on your request as promptly as we can.</p>
+    </section>
+
+    <section class="legal-section" id="childrens-privacy">
+      <span class="section-num">10</span>
+      <h2>Children's Privacy</h2>
+      <p>This website is not intended for, and is not directed at, individuals under the age of 18 (or 16, where applicable under local law). We do not knowingly collect personal information from children. If you believe a child has provided us with personal data, please contact us so we can remove it.</p>
+    </section>
+
+    <section class="legal-section" id="changes">
+      <span class="section-num">11</span>
+      <h2>Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time to reflect changes in our practices, tools, or legal requirements. Any changes will be posted on this page with an updated "Last updated" date, so we encourage you to check back periodically.</p>
+    </section>
+
+    <section class="legal-section" id="contact">
+      <span class="section-num">12</span>
+      <h2>Contact Information</h2>
+      <p>If you have any questions about this Privacy Policy or how your data is handled, please reach out through the contact form on our website, or email us directly at <strong>noorproductions.as@gmail.com</strong>.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 NOOR Productions. All rights reserved.</p>
+    <a href="index.html">Return to Home</a>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Page Not Found | NOOR Productions</title>
+<meta name="description" content="The page you requested could not be found. Return to NOOR Productions for premium web design, development, SEO, and digital strategy services.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#05070b">
+
+<!--
+  GitHub Pages note: this file MUST live at the repo root (same level as
+  index.html) and MUST be named exactly "404.html" — GitHub Pages serves
+  it automatically (with a real HTTP 404 status) for any URL that doesn't
+  match a file in the repo. No config needed, no redirects file.
+
+  This is a static twin of error.html's code=00 state, not a redirect to
+  it — that avoids an extra network hop/JS dependency and means this
+  still works correctly even if JavaScript fails to load.
+-->
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48.png">
+<link rel="shortcut icon" href="assets/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/article.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+<nav id="site-nav" class="nav--visible" aria-label="Site navigation">
+  <a class="nav-logo" href="index.html" aria-label="NOOR Productions — home">
+    <img src="assets/logo.png" alt="NOOR Productions logo" class="nav-logo-img" width="32" height="32">
+    <span class="nav-logo-text">NOOR Productions</span>
+    <span class="nav-logo-dot"></span>
+  </a>
+  <ul class="nav-links" role="list">
+    <li><a href="index.html#why-noor">BRIEFING</a></li>
+    <li><a href="index.html#pricing">PRICING</a></li>
+    <li><a href="index.html#portfolio">WORK</a></li>
+    <li><a href="index.html#how-we-work">PROCESS</a></li>
+    <li><a href="index.html#blog">BLOG</a></li>
+    <li><a href="index.html#testimonials">REVIEWS</a></li>
+    <li><a href="index.html#faq">FAQ</a></li>
+  </ul>
+  <a class="nav-cta" href="index.html#contact" aria-label="Go to contact section">
+    <span class="nav-cta-dot"></span>CONTACT
+  </a>
+  <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+  <ul class="nav-drawer-links" role="list">
+    <li><a href="index.html#why-noor">BRIEFING</a></li>
+    <li><a href="index.html#pricing">PRICING</a></li>
+    <li><a href="index.html#portfolio">WORK</a></li>
+    <li><a href="index.html#how-we-work">PROCESS</a></li>
+    <li><a href="index.html#blog">BLOG</a></li>
+    <li><a href="index.html#testimonials">REVIEWS</a></li>
+    <li><a href="index.html#faq">FAQ</a></li>
+  </ul>
+</div>
+<div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+
+<main class="error-main">
+  <div class="error-shell">
+    <span class="error-code">SYSTEM ERROR // 00</span>
+    <h1 class="error-title">Page not found</h1>
+    <p class="error-message">The page you're looking for doesn't exist or may have moved.</p>
+    <div class="error-actions">
+      <a href="index.html" class="error-btn error-btn-primary">BACK TO HOME <span class="deploy-arrow">&rarr;</span></a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>&copy; 2026 NOOR Productions. All rights reserved.</span>
+  <span><a href="index.html">Home</a> &nbsp;/&nbsp; <a href="index.html#testimonials">Reviews</a> &nbsp;/&nbsp; <a href="index.html#contact">Contact</a></span>
+</footer>
+
+<script>
+(function(){
+  const burger  = document.getElementById('nav-burger');
+  const drawer  = document.getElementById('nav-drawer');
+  const overlay = document.getElementById('nav-overlay');
+  function toggle(open){
+    drawer.classList.toggle('is-open', open);
+    overlay.classList.toggle('is-open', open);
+    burger.classList.toggle('is-active', open);
+    burger.setAttribute('aria-expanded', open ? 'true':'false');
+    drawer.setAttribute('aria-hidden', open ? 'false':'true');
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  burger.addEventListener('click', () => toggle(!drawer.classList.contains('is-open')));
+  overlay.addEventListener('click', () => toggle(false));
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggle(false)));
+})();
+</script>
+
+</body>
+</html>

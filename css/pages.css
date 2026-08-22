@@ -1,0 +1,527 @@
+/* ===================================================
+   NOOR PRODUCTIONS — Contact / Testimonials / Error
+   Shared styles for pages.html-family screens.
+   Load AFTER style.css (and article.css where relevant).
+=================================================== */
+
+/* ---------------------------------------------------
+   CONTACT — used both as the #contact section on
+   index.html and as the body of standalone contact.html
+--------------------------------------------------- */
+.contact-section {
+  padding: 14vh var(--edge) 14vh;
+}
+.contact-main {
+  padding-top: 16vh;
+  padding-bottom: 12vh;
+}
+
+.contact-head {
+  max-width: 640px;
+  margin: 0 auto 64px;
+  text-align: center;
+}
+.contact-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 14px 0 18px;
+}
+.contact-sub {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--mono-text);
+  line-height: 1.7;
+}
+
+.contact-grid {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(240px, 340px) 1fr;
+  gap: 48px;
+}
+
+/* Left column — direct links */
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.contact-link-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: rgba(14,14,18,0.7);
+  border: 1px solid var(--gold-dim);
+  text-decoration: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.contact-link-item:hover {
+  border-color: var(--gold);
+  box-shadow: 0 0 24px rgba(201,161,90,0.1);
+}
+.contact-link-icon {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  width: 34px; height: 34px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.contact-link-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.contact-link-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--mono-text);
+  text-transform: uppercase;
+}
+.contact-link-value {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+/* Right column — form */
+.contact-form {
+  background: rgba(14,14,18,0.55);
+  border: 1px solid var(--gold-dim);
+  padding: 36px;
+}
+.contact-field {
+  margin-bottom: 20px;
+}
+.contact-field label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--mono-text);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.contact-field input,
+.contact-field select,
+.contact-field textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--gold-dim);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.contact-field input:focus,
+.contact-field select:focus,
+.contact-field textarea:focus {
+  border-color: var(--gold);
+}
+.contact-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+.contact-field select {
+  cursor: pointer;
+}
+.contact-field select option {
+  background: var(--charcoal);
+  color: var(--ink);
+}
+.contact-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.contact-submit-btn {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--void);
+  background: var(--gold);
+  border: none;
+  padding: 15px 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s ease, gap 0.2s ease;
+}
+.contact-submit-btn:hover {
+  background: var(--gold-bright);
+  gap: 12px;
+}
+.contact-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.contact-form-status {
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--gold);
+  min-height: 1.2em;
+}
+
+/* Legal links row (Privacy / Terms) */
+.contact-legal-row {
+  max-width: 1080px;
+  margin: 56px auto 0;
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+}
+.contact-legal-row a {
+  color: var(--mono-text);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.contact-legal-row a:hover {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+}
+
+@media (max-width: 860px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+  .contact-row-2 {
+    grid-template-columns: 1fr;
+  }
+  .contact-form {
+    padding: 26px;
+  }
+}
+@media (max-width: 720px) {
+  .contact-section,
+  .contact-main {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* ---------------------------------------------------
+   TESTIMONIALS
+--------------------------------------------------- */
+.testimonials-section {
+  padding: 14vh var(--edge) 14vh;
+  background: var(--void);
+}
+@media (max-width: 720px) {
+  .testimonials-section {
+    padding: 10vh var(--edge) 10vh;
+  }
+}
+.testimonials-head {
+  margin-bottom: 64px;
+}
+.testimonials-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 14px 0 18px;
+}
+.testimonials-sub {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--mono-text);
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 20px;
+  min-height: 120px;
+}
+
+/* Empty state (shown until backend populates real reviews) */
+.testimonials-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 24px;
+  border: 1px dashed var(--gold-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--mono-text);
+}
+
+/* Review card shape — for reference / reuse once backend renders real cards */
+.testimonial-card {
+  position: relative;
+  background: rgba(14,14,18,0.7);
+  border: 1px solid var(--gold-dim);
+  padding: 24px;
+}
+.testimonial-quote {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.testimonial-rating {
+  color: var(--gold);
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  margin: 0 0 8px;
+}
+.testimonial-author {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.testimonial-reply {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gold-dim);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--mono-text);
+}
+.testimonial-reply-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Write-a-feedback block */
+.write-feedback-block {
+  max-width: 560px;
+  margin: 72px auto 0;
+  text-align: center;
+}
+.write-feedback-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--void);
+  background: var(--gold);
+  border: none;
+  padding: 15px 32px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease, gap 0.2s ease;
+}
+.write-feedback-btn:hover {
+  background: var(--gold-bright);
+  gap: 12px;
+}
+.write-feedback-note {
+  margin-top: 18px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--mono-text);
+  line-height: 1.6;
+}
+
+.google-signin-btn {
+  margin-top: 20px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--gold-dim);
+  padding: 12px 26px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.google-signin-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.google-signin-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* Write / edit review modal */
+.review-modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(6,6,8,0.85);
+  z-index: 999;
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.review-modal-overlay.is-open { display: flex; }
+.review-modal {
+  position: relative;
+  width: 100%; max-width: 480px;
+  background: var(--charcoal);
+  border: 1px solid var(--gold-dim);
+  padding: 32px 28px;
+}
+.review-modal-title {
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-size: 1.3rem;
+  margin: 0 0 20px;
+}
+.review-modal-close {
+  position: absolute; top: 14px; right: 18px;
+  background: none; border: none; color: var(--mono-text);
+  font-size: 22px; cursor: pointer; line-height: 1;
+}
+.review-modal-close:hover { color: var(--gold); }
+.review-modal-input, .review-modal-textarea {
+  width: 100%;
+  background: var(--void);
+  border: 1px solid var(--gold-dim);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  resize: vertical;
+}
+.review-modal-textarea { min-height: 120px; }
+.review-modal-input:focus, .review-modal-textarea:focus {
+  outline: none; border-color: var(--gold);
+}
+.review-modal-stars {
+  display: flex; gap: 6px; margin-bottom: 14px;
+}
+.star-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 26px; line-height: 1; padding: 0;
+  color: var(--gold-dim);
+  transition: color 0.15s ease;
+}
+.star-btn.is-filled { color: var(--gold); }
+.review-modal-actions { text-align: right; }
+.review-modal-submit {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--void);
+  background: var(--gold);
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.review-modal-submit:hover { background: var(--gold-bright); }
+.review-modal-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.review-modal-status {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--mono-text);
+  min-height: 14px;
+}
+
+/* ---------------------------------------------------
+   ERROR PAGE (error.html?code=XX)
+--------------------------------------------------- */
+.error-main {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14vh var(--edge) 10vh;
+}
+.error-shell {
+  max-width: 520px;
+  text-align: center;
+}
+.error-code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  display: inline-block;
+  padding: 6px 16px;
+  margin-bottom: 28px;
+}
+.error-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--ink);
+  line-height: 1.25;
+  margin-bottom: 18px;
+}
+.error-message {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--mono-text);
+  line-height: 1.75;
+  margin-bottom: 34px;
+}
+.error-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.error-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  padding: 13px 26px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, gap 0.2s ease;
+}
+.error-btn-primary {
+  color: var(--void);
+  background: var(--gold);
+  border: none;
+}
+.error-btn-primary:hover {
+  background: var(--gold-bright);
+  gap: 12px;
+}
+.error-btn-secondary {
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--gold-dim);
+}
+.error-btn-secondary:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}

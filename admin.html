@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Review Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<style>
+  :root {
+    --bg: #14151a;
+    --panel: #1d1f27;
+    --border: #2b2e38;
+    --text: #e8e9ee;
+    --muted: #8b8f9e;
+    --accent: #5b8cff;
+    --danger: #ff6b6b;
+    --ok: #4fd88a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+  }
+  header {
+    padding: 20px 28px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  header h1 { font-size: 18px; margin: 0; font-weight: 600; }
+  #login { max-width: 340px; margin: 80px auto; padding: 24px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 10px; }
+  #login input { width: 100%; padding: 10px; margin-bottom: 10px; background: #0f1015;
+    border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+  button {
+    background: var(--accent); color: white; border: none; padding: 9px 16px;
+    border-radius: 6px; cursor: pointer; font-size: 14px;
+  }
+  button.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  button.danger { background: var(--danger); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  main { display: none; max-width: 960px; margin: 0 auto; padding: 24px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tabs button { background: transparent; border: 1px solid var(--border); }
+  .tabs button.active { background: var(--accent); border-color: var(--accent); }
+  .row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .row input { flex: 1; padding: 10px; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); font-size: 14px; }
+  th { color: var(--muted); font-weight: 500; }
+  .badge { padding: 2px 8px; border-radius: 20px; font-size: 12px; }
+  .badge.active { background: rgba(79,216,138,0.15); color: var(--ok); }
+  .badge.used { background: rgba(139,143,158,0.15); color: var(--muted); }
+  .badge.removed { background: rgba(255,107,107,0.15); color: var(--danger); }
+  .stars { color: #ffd166; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; margin-bottom: 12px; }
+  .card .meta { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+  .card .reply { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .card textarea { width: 100%; min-height: 60px; background: #0f1015; border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text); padding: 8px; font-family: inherit; }
+  #status { font-size: 13px; color: var(--muted); margin-top: 8px; min-height: 18px; }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1 style="margin-top:0">Sign in</h1>
+  <input id="loginEmail" type="email" placeholder="you@yourbusiness.com" />
+  <input id="loginPass" type="password" placeholder="Password" />
+  <button onclick="doLogin()">Sign in</button>
+  <div id="status"></div>
+</div>
+
+<header style="display:none" id="appHeader">
+  <h1>Review Admin Panel</h1>
+  <button class="secondary" onclick="doLogout()">Sign out</button>
+</header>
+
+<main id="app">
+  <div class="tabs">
+    <button id="tabEmailsBtn" class="active" onclick="showTab('emails')">Verified Clients</button>
+    <button id="tabFeedbackBtn" onclick="showTab('feedback')">Reviews</button>
+  </div>
+
+  <section id="tabEmails">
+    <div class="row">
+      <input id="newEmail" placeholder="client@example.com" />
+      <input id="newName" placeholder="Client / business name (optional)" />
+      <button onclick="verifyEmail()">Verify</button>
+    </div>
+    <table>
+      <thead><tr><th>Email</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody id="emailsTable"></tbody>
+    </table>
+  </section>
+
+  <section id="tabFeedback" style="display:none">
+    <div id="feedbackList"></div>
+  </section>
+
+  <div id="status2"></div>
+</main>
+
+<!-- EmailJS: client-side email sending, no backend/Blaze plan needed -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<!-- Firebase v10 modular SDK via CDN -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import {
+    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, updateDoc, collection, onSnapshot, orderBy, query, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+  // ── CONFIG — keep these IDENTICAL to js/reviews.js on the main site ──
+  const firebaseConfig = {
+    apiKey: "AIzaSyAl4um8RDnjju8cvMGcSLjtPCSCWh6qajM",
+    authDomain: "noor-productions-site.firebaseapp.com",
+    projectId: "noor-productions-site",
+  };
+  const ADMIN_EMAIL = "noorproductions.as@gmail.com"; // must match firestore.rules' isAdmin()
+
+  // EmailJS (emailjs.com free tier). See SETUP.md for template setup.
+  const EMAILJS_PUBLIC_KEY    = "JsS_HIYQlBNniDhUK";
+  const EMAILJS_SERVICE_ID    = "Dream Boutique";
+  // EmailJS free plan caps you at 2 templates account-wide, and the other
+  // slot is already used by Delhi Boutique's live order template. So
+  // everything here reuses ONE generic template — its "To Email" field is
+  // {{to_email}}, a variable, not hardcoded, which is what makes reusing
+  // it for both client- and admin-facing messages possible.
+  const EMAILJS_TEMPLATE_ID   = "template_to_client"; // vars: to_email, to_name, subject, message
+  // ───────────────────────────────────────────────────────────────────
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  if (window.emailjs) window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  function emailClient(toEmail, toName, subject, message) {
+    if (!window.emailjs) return;
+    return window.emailjs
+      .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { to_email: toEmail, to_name: toName || toEmail, subject, message })
+      .catch((e) => console.error("EmailJS (to client) failed:", e));
+  }
+  function emailAdmin(subject, message) {
+    if (!window.emailjs) return;
+    return window.emailjs
+      .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { to_email: "noorproductions.as@gmail.com", to_name: "NOOR Productions", subject, message })
+      .catch((e) => console.error("EmailJS (to admin) failed:", e));
+  }
+  function emailKey(email) {
+    return (email || "").trim().toLowerCase();
+  }
+  function escapeHtml(s) {
+    return (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function starString(n) {
+    const v = Math.max(0, Math.min(5, Number(n) || 0));
+    return "★".repeat(v) + "☆".repeat(5 - v);
+  }
+
+  window.doLogin = async () => {
+    const email = document.getElementById("loginEmail").value;
+    const pass = document.getElementById("loginPass").value;
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch (e) {
+      document.getElementById("status").textContent = e.message;
+    }
+  };
+  window.doLogout = () => signOut(auth);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user && user.email !== ADMIN_EMAIL) {
+      document.getElementById("status").textContent = "This account is not authorized as admin.";
+      signOut(auth);
+      return;
+    }
+    document.getElementById("login").style.display = user ? "none" : "block";
+    document.getElementById("appHeader").style.display = user ? "flex" : "none";
+    document.getElementById("app").style.display = user ? "block" : "none";
+    if (user) {
+      listenEmails();
+      listenFeedback();
+    }
+  });
+
+  window.showTab = (tab) => {
+    document.getElementById("tabEmails").style.display = tab === "emails" ? "block" : "none";
+    document.getElementById("tabFeedback").style.display = tab === "feedback" ? "block" : "none";
+    document.getElementById("tabEmailsBtn").classList.toggle("active", tab === "emails");
+    document.getElementById("tabFeedbackBtn").classList.toggle("active", tab === "feedback");
+  };
+
+  // Verifying writes directly to Firestore (no Cloud Function / Blaze plan
+  // needed) and is gated purely by firestore.rules checking the signed-in
+  // admin's email — see firestore.rules.
+  window.verifyEmail = async () => {
+    const emailInput = document.getElementById("newEmail");
+    const nameInput = document.getElementById("newName");
+    const email = emailInput.value.trim();
+    const name = nameInput.value.trim();
+    if (!email) return;
+    const key = emailKey(email);
+    try {
+      await setDoc(doc(db, "verifiedClients", key), {
+        email,
+        clientName: name || "",
+        status: "active",
+        verifiedAt: serverTimestamp()
+      }, { merge: true });
+
+      emailClient(
+        email, name,
+        "You're verified — leave a review for NOOR Productions",
+        `Hi${name ? " " + name : ""},\n\nYou've been verified as a NOOR Productions client. You can now sign in with Google on the site and leave a review.\n\nThanks!`
+      );
+      emailAdmin(
+        "Client added to verified list",
+        `You verified ${name ? name + " " : ""}(${email}) as a client.`
+      );
+
+      emailInput.value = "";
+      nameInput.value = "";
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  window.removeEmail = async (email) => {
+    if (!confirm(`Revoke access for ${email}?`)) return;
+    try {
+      await updateDoc(doc(db, "verifiedClients", emailKey(email)), {
+        status: "removed",
+        removedAt: serverTimestamp()
+      });
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  // Reviews are keyed by the client's email, so feedbackId IS the email key.
+  let feedbackCache = {};
+  window.submitReply = async (feedbackId) => {
+    const textarea = document.getElementById(`reply-${feedbackId}`);
+    const content = textarea.value.trim();
+    if (!content) return;
+    try {
+      await updateDoc(doc(db, "reviews", feedbackId), {
+        adminReply: content,
+        adminReplyAt: serverTimestamp()
+      });
+      const f = feedbackCache[feedbackId];
+      if (f) {
+        emailClient(
+          f.clientEmail, f.clientName,
+          "NOOR Productions replied to your review",
+          `Hi${f.clientName ? " " + f.clientName : ""},\n\nWe replied to your review:\n\n"${content}"`
+        );
+      }
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  function listenEmails() {
+    const q = query(collection(db, "verifiedClients"), orderBy("verifiedAt", "desc"));
+    onSnapshot(q, (snap) => {
+      const rows = snap.docs.map((d) => {
+        const data = d.data();
+        return `<tr>
+          <td>${escapeHtml(data.email)}</td>
+          <td><span class="badge ${data.status}">${data.status}</span></td>
+          <td>${data.status !== "removed"
+            ? `<button class="danger" onclick="removeEmail('${data.email.replace(/'/g, "\\'")}')">Remove</button>`
+            : ""}</td>
+        </tr>`;
+      });
+      document.getElementById("emailsTable").innerHTML = rows.join("");
+    }, (err) => {
+      document.getElementById("status2").textContent = err.message;
+    });
+  }
+
+  function listenFeedback() {
+    const q = query(collection(db, "reviews"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snap) => {
+      feedbackCache = {};
+      const cards = snap.docs.map((d) => {
+        const f = d.data();
+        feedbackCache[d.id] = f;
+        return `<div class="card">
+          <div class="meta">${escapeHtml(f.clientName || f.clientEmail)} · ${escapeHtml(f.clientEmail)}
+            · <span class="stars">${starString(f.rating)}</span>
+            ${f.editCount ? " · edited" : ""}</div>
+          <div>${escapeHtml(f.quote)}</div>
+          <div class="reply">
+            ${f.adminReply ? `<div class="meta">Your reply:</div><div>${escapeHtml(f.adminReply)}</div><br/>` : ""}
+            <textarea id="reply-${d.id}" placeholder="Write or update your reply...">${f.adminReply ? escapeHtml(f.adminReply) : ""}</textarea>
+            <div style="margin-top:8px"><button onclick="submitReply('${d.id}')">Save reply</button></div>
+          </div>
+        </div>`;
+      });
+      document.getElementById("feedbackList").innerHTML = cards.join("");
+    }, (err) => {
+      document.getElementById("status2").textContent = err.message;
+    });
+  }
+</script>
+</body>
+</html>

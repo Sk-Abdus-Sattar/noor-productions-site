@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.noorproductions.studio/sitemap.xml
+
+# Priority pages
+Allow: /index.html
+Allow: /contact.html
+Allow: /blog1.html
+Allow: /blog2.html
+Allow: /blog3.html
+Allow: /blog4.html
+Allow: /blog5.html
+Allow: /blog6.html
+Allow: /blog7.html
+Allow: /blog8.html
+Allow: /blog9.html
+Allow: /blog10.html

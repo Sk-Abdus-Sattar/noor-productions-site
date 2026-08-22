@@ -1,0 +1,101 @@
+rules_version = '2';
+
+// ============================================================
+// NOOR Productions — Firestore security rules
+// No Cloud Functions (Spark/free plan). All writes are made
+// directly from the client (admin.html and js/reviews.js), so
+// these rules are the ONLY thing enforcing who can do what.
+// ============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email.lower() == "noorproductions.as@gmail.com";
+    }
+
+    // Doc IDs in verifiedClients/ and reviews/ are the client's
+    // lowercased email — this lets rules match auth.token.email
+    // straight to the doc ID with no extra query.
+    function isOwnEmail(emailId) {
+      return isSignedIn() && request.auth.token.email.lower() == emailId;
+    }
+
+    match /verifiedClients/{emailId} {
+      // A client can check their own verification status; the
+      // admin panel can list everyone.
+      allow read: if isAdmin() || isOwnEmail(emailId);
+
+      // Only the admin can verify a new client or remove one.
+      allow create, delete: if isAdmin();
+
+      // Either the admin can update freely, or a client can flip
+      // their OWN doc from "active" to "used" — nothing else, and
+      // no other fields — which is what js/reviews.js does in the
+      // same batch as creating their first review.
+      allow update: if isAdmin()
+        || (isOwnEmail(emailId)
+            && resource.data.status == "active"
+            && request.resource.data.status == "used"
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "usedAt"]));
+    }
+
+    match /reviews/{emailId} {
+      // Testimonials are public.
+      allow read: if true;
+
+      // A client can create exactly one review, for themself, only
+      // if they're on the active verified-clients list. Every field
+      // is validated — no extra/unexpected fields, real timestamps,
+      // a real 1-600 char quote, and an integer rating 1-5.
+      allow create: if isOwnEmail(emailId)
+        && request.resource.data.keys().hasOnly(["clientEmail", "clientName", "quote", "rating", "createdAt", "editCount"])
+        && request.resource.data.clientEmail == request.auth.token.email
+        && request.resource.data.quote is string
+        && request.resource.data.quote.size() > 0
+        && request.resource.data.quote.size() <= 600
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.editCount == 0
+        && request.resource.data.createdAt == request.time
+        && exists(/databases/$(database)/documents/verifiedClients/$(emailId))
+        && get(/databases/$(database)/documents/verifiedClients/$(emailId)).data.status == "active";
+
+      // Either the client edits their own quote/rating (once), or the
+      // admin writes a reply — never both in the same write. The
+      // client-edit branch validates the same fields as create, plus
+      // confirms editCount only ever advances by exactly one and the
+      // admin's reply fields (if any already exist) are untouched.
+      allow update: if
+        (
+          isOwnEmail(emailId)
+          && request.resource.data.keys().hasOnly(["clientEmail", "clientName", "quote", "rating", "createdAt", "editedAt", "editCount", "adminReply", "adminReplyAt"])
+          && resource.data.editCount < 1
+          && request.resource.data.editCount == resource.data.editCount + 1
+          && request.resource.data.clientEmail == resource.data.clientEmail
+          && request.resource.data.quote is string
+          && request.resource.data.quote.size() > 0
+          && request.resource.data.quote.size() <= 600
+          && request.resource.data.rating is int
+          && request.resource.data.rating >= 1
+          && request.resource.data.rating <= 5
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.editedAt == request.time
+          && request.resource.data.get("adminReply", null) == resource.data.get("adminReply", null)
+          && request.resource.data.get("adminReplyAt", null) == resource.data.get("adminReplyAt", null)
+        )
+        ||
+        (
+          isAdmin()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["adminReply", "adminReplyAt"])
+        );
+
+      allow delete: if isAdmin();
+    }
+  }
+}
