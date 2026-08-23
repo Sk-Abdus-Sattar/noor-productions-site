@@ -779,35 +779,78 @@ body{
 }
 
 
+/* ---- Extra-large screens (TVs, ultrawide monitors): the left column
+   and the arc pin to opposite edges independently, so past a certain
+   width they drift apart with a dead gap between them. Pull the arc
+   inward symmetrically instead of letting it hug the true viewport
+   edge — .why-noor itself stays full-bleed for the background. ---- */
+@media (min-width: 1700px){
+  .arc-scene{
+    right: max(0px, calc((100vw - 1700px) / 2));
+  }
+}
+
 /* ===================================================
    Responsive — below this width the ring math doesn't
    have room to breathe; fall back to a plain vertical
    stack of cards, no rotation.
 =================================================== */
-@media (max-width: 860px){
+@media (max-width: 760px){
   .why-noor{ padding: 8vh 0 6vh; min-height: 0; }
   .arc-left{
     max-width: 100%;
-    padding: 0 var(--edge) 4vh;
+    padding: 0 var(--edge) 3vh;
   }
+  .arc-hint-icon{ animation: swipe-hint 1.6s ease-in-out infinite; }
+  @keyframes swipe-hint{
+    0%, 100%{ transform: translateX(0); }
+    50%{ transform: translateX(3px); }
+  }
+
+  /* Swipeable horizontal strip — native scroll-snap, no rotation.
+     The JS positioning loop keeps running (untouched) but every inline
+     style it sets is overridden here so cards render as a plain,
+     finger-friendly row instead of fighting the arc math. */
   .arc-scene{
     position: static;
     width: 100%;
     height: auto;
-    padding: 0 var(--edge);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 14px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px var(--edge) 20px;
+    /* Peek of the next card signals "swipe me" without needing a caption */
+    scroll-padding-left: var(--edge);
   }
+  .arc-scene::-webkit-scrollbar{ height: 4px; }
+  .arc-scene::-webkit-scrollbar-thumb{ background: var(--gold-dim); }
+
   .arc-card{
-    position: static !important;
-    width: 100% !important;
+    position: relative !important;
+    flex: 0 0 auto !important;
+    width: 82vw !important;
+    max-width: 320px !important;
     height: auto !important;
-    min-height: 140px;
+    min-height: 180px;
     transform: none !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
+    scroll-snap-align: center;
   }
-  .arc-card.is-expanded{ width:100% !important; height:auto !important; min-height:220px; }
+  .arc-card.is-expanded{
+    width: 82vw !important;
+    max-width: 320px !important;
+    height: auto !important;
+  }
+  .arc-card.is-expanded .arc-card-body{
+    max-height: 42vh;
+    overflow-y: auto;
+  }
   .fc-title{ font-size: 1rem; }
   .arc-card-body{ font-size: 0.84rem; max-height: 160px; }
 }
@@ -1013,19 +1056,18 @@ body{
   box-shadow: 0 0 44px rgba(240,205,122,0.2), 0 16px 40px rgba(0,0,0,0.5);
 }
 
-/* ---- Mobile: single column, no alternation, no rail ---- */
-@media (max-width: 860px){
+/* ---- Small screens + tablets: single column with a left-side rail ---- */
+@media (max-width: 1024px){
   .pipeline{
     padding: 10vh var(--edge) 10vh;
   }
-  .pipeline::before{
-    display: none;
-  }
-  .pipeline-track::before{
-    display: none;
-  }
   .pipeline-track{
     gap: 14px;
+    padding-left: 30px;
+  }
+  .pipeline-track::before{
+    left: 5px;
+    transform: none;
   }
   .pipeline-step{
     width: 100%;
@@ -1035,8 +1077,16 @@ body{
     margin-bottom: 0;
     padding: 22px 22px 24px;
   }
+  /* Reuse the same connector dot, just re-anchored to the left rail
+     instead of alternating sides — keeps the "linked sequence" feeling
+     without needing the two-column layout it was built for. */
   .pipeline-step-connector{
-    display: none;
+    display: block;
+  }
+  .pipeline-step:nth-child(odd) .pipeline-step-connector,
+  .pipeline-step:nth-child(even) .pipeline-step-connector{
+    left: -25px;
+    right: auto;
   }
 }
 
