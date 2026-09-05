@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — NOOR Productions</title>
+<meta name="description" content="Live web design and development projects from NOOR Productions — explore them as an interactive project cube.">
+<meta name="keywords" content="NOOR Productions portfolio, web design projects, web development case studies, live websites">
+<meta name="author" content="NOOR Productions">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#05070b">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48.png">
+<link rel="shortcut icon" href="assets/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="canonical" href="https://www.noorproductions.studio/projects.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Projects — NOOR Productions">
+<meta property="og:description" content="Live web design and development projects from NOOR Productions — explore them as an interactive project cube.">
+<meta property="og:url" content="https://www.noorproductions.studio/projects.html">
+<meta property="og:site_name" content="NOOR Productions">
+<meta property="og:image" content="https://www.noorproductions.studio/assets/logo.png">
+<meta property="og:image:alt" content="NOOR Productions logo">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Projects — NOOR Productions">
+<meta name="twitter:description" content="Live web design and development projects from NOOR Productions — explore them as an interactive project cube.">
+<meta name="twitter:image" content="https://www.noorproductions.studio/assets/logo.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Projects — NOOR Productions",
+  "url": "https://www.noorproductions.studio/projects.html",
+  "description": "Live web design and development projects from NOOR Productions — explore them as an interactive project cube.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "NOOR Productions",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.noorproductions.studio/assets/logo.png"
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/cube.css">
+</head>
+<body>
+
+<canvas id="cube-canvas"></canvas>
+
+<a class="hud-corner hud-tl" href="index.html" aria-label="Back to NOOR Productions home">
+  <span class="hud-text">← NOOR PRODUCTIONS</span>
+</a>
+<div class="hud-corner hud-tr">
+  <span class="hud-text" id="hudCounter">00 / 54</span>
+</div>
+
+<main class="cube-stage">
+  <div class="cube-hero" id="cubeHero">
+    <div class="cube-content" id="cubeContent">
+      <p class="greeting" id="greeting">Fifty-four pieces, one studio — pick a face, then a piece.</p>
+
+      <div class="cube-picker" id="cubePicker">
+        <div class="picker-tabs" id="pickerTabs"></div>
+        <div class="picker-grid" id="pickerGrid"></div>
+      </div>
+
+      <div class="story-panel" id="storyPanel" aria-live="polite">
+        <span class="story-tag" id="storyTag">SLOT —</span>
+        <h2 class="story-title" id="storyTitle">Reserved</h2>
+        <p class="story-body" id="storyBody">This piece is ready for a work. Drop a logo, title, and a few sentences in cube.js — it lights right up.</p>
+        <a class="story-link" id="storyLink" href="#" target="_blank" rel="noopener">VIEW LIVE →</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="gallery-section" id="gallerySection">
+    <div class="gallery-head">
+      <span class="gallery-tag" id="galleryTag">SLOT —</span>
+      <h3 class="gallery-title" id="galleryTitle">Pick a piece above</h3>
+    </div>
+    <div class="gallery-track" id="galleryTrack">
+      <p class="gallery-empty">Tap any numbered piece to preview its picture gallery here.</p>
+    </div>
+  </section>
+</main>
+
+<script src="js/vendor/gsap.min.js"></script>
+<script type="module" src="js/cube.js"></script>
+
+<!-- ===== Mobile-only: free-drag cube + tap overlay (hidden on desktop, see cube.css) ===== -->
+<button type="button" class="mobile-help-btn" id="mobileHelpBtn" aria-label="How this works">?</button>
+<button type="button" class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close">✕</button>
+
+<div class="mobile-immovable" id="mobileImmovable"></div>
+
+<div class="mobile-sheet" id="mobileSheet">
+  <div class="mobile-sheet-inner">
+    <div class="mobile-sheet-spacer"></div>
+    <div class="mobile-sheet-content">
+      <span class="story-tag" id="mobileSheetTag">SLOT —</span>
+      <h2 class="story-title" id="mobileSheetTitle"></h2>
+      <p class="story-body" id="mobileSheetBody"></p>
+      <div class="gallery-track" id="mobileSheetGallery"></div>
+    </div>
+  </div>
+</div>
+
+<div class="mobile-toast" id="mobileToast">Nothing has been made yet on this piece.</div>
+
+<div class="mobile-help-sheet" id="mobileHelpSheet">
+  <div class="mobile-help-card">
+    <h3>How this works</h3>
+    <ul>
+      <li>Drag the cube to spin it, just like a real one.</li>
+      <li>Tap a face to square it up to you.</li>
+      <li>Tap a piece on that face to see what's on it.</li>
+      <li>Tap ✕ to close and go back to the cube.</li>
+      <li>With nothing open, double-tap a piece to jump straight to it live.</li>
+    </ul>
+    <button type="button" class="mobile-help-close" id="mobileHelpClose">Got it</button>
+  </div>
+</div>
+
+</body>
+</html>

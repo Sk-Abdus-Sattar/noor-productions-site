@@ -605,6 +605,35 @@ body{
   padding: 12vh 0 10vh;
   overflow: hidden;
 }
+.deploy-teaser{
+  position: relative;
+  background: var(--charcoal);
+  padding: 12vh 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.deploy-teaser-cta{
+  margin-top: 2vh;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  text-decoration: none;
+  border: 1px solid var(--gold-dim);
+  padding: 16px 28px;
+  transition: gap 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.deploy-teaser-cta:hover{
+  gap: 16px;
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 24px rgba(201,161,90,0.2);
+}
 .deploy-head{
   max-width: 640px;
   margin: 0 auto 6vh;

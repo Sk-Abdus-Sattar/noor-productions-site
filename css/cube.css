@@ -1,0 +1,558 @@
+/* ===================================================
+   PROJECT CUBE — matches NOOR Productions design tokens
+=================================================== */
+:root{
+  --void:        #060608;
+  --charcoal:    #0e0e12;
+  --gold:        #c9a15a;
+  --gold-bright: #f0cd7a;
+  --gold-dim:    #6b5730;
+  --ink:         #e8e4d8;
+  --mono-text:   #9a9488;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+  --font-body:    'Inter', sans-serif;
+
+  --edge: 32px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+html{ text-rendering: optimizeLegibility; }
+
+body{
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection{ background: var(--gold); color: var(--void); }
+
+/* ---------------- background canvas ----------------
+   Solid void instead of a soft blurred radial gradient —
+   the WebGL cube + drifting gold particles now provide
+   the depth, so the backdrop itself stays high-contrast
+   and sharp instead of hazy. */
+#cube-canvas{
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--void);
+}
+
+/* A tighter, harder-edged vignette drawn in CSS (not baked
+   into a blurred canvas gradient) keeps the frame's corners
+   defined without smearing the center. */
+body::before{
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 28%, transparent 0%, transparent 48%, rgba(0,0,0,0.35) 78%, rgba(0,0,0,0.6) 100%);
+}
+
+/* ---------------- HUD corners ---------------- */
+.hud-corner{
+  position: fixed;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--mono-text);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hud-tl{ top: var(--edge); left: var(--edge); border-top:1px solid var(--gold-dim); border-left:1px solid var(--gold-dim); padding:10px 16px; text-decoration:none; cursor:pointer; transition: color 0.2s ease, border-color 0.2s ease; }
+.hud-tl:hover{ color: var(--gold-bright); border-color: var(--gold); }
+.hud-tr{ top: var(--edge); right: var(--edge); border-top:1px solid var(--gold-dim); border-right:1px solid var(--gold-dim); padding:10px 16px; color: var(--gold); }
+
+/* ---------------- stage ---------------- */
+.cube-stage{
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px 14vh;
+  text-align: center;
+}
+
+/* Fixed-height band that always reserves the full first viewport,
+   regardless of which children inside it are shown/hidden. This is
+   what keeps the gallery section below from ever drifting up into
+   the cube's space — its starting position never depends on the
+   info column's own height. */
+.cube-hero{
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 6vw;
+}
+
+@media (max-width: 900px){
+  .cube-hero{ justify-content: center; padding-right: 0; padding-top: 30vh; }
+}
+
+/* Everything that talks about a piece — greeting, keypad, story — lives
+   in one permanently in-flow column. No docking / position:fixed here:
+   that was the source of the overlap, since removing an element from
+   flow makes its siblings collapse up into its old space. Plain flow
+   removes the possibility of that entirely. */
+.cube-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.greeting{
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  color: var(--mono-text);
+  max-width: 520px;
+  line-height: 1.6;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.greeting.is-hidden{
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  position: absolute;
+}
+
+.story-panel{
+  max-width: 560px;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.story-panel.is-visible{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.story-tag{
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid var(--gold-dim);
+  margin-bottom: 18px;
+}
+.story-title{
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3.4vw, 2.2rem);
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.story-body{
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--mono-text);
+}
+.story-link{
+  margin-top: 20px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  text-decoration: none;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+.story-link:hover{ gap: 12px; color: var(--gold-bright); }
+
+/* ---------------- cube picker: face tabs + 3x3 piece grid ----------------
+   54 pieces don't fit as one flat row of buttons, so they're grouped
+   by face — pick a face, then pick one of its 9 pieces. */
+.cube-picker{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.picker-tabs{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.picker-tab{
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-dim);
+  background: rgba(14,14,18,0.7);
+  color: var(--mono-text);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+.picker-tab:hover{ color: var(--gold-bright); border-color: var(--gold); }
+.picker-tab.is-active{
+  background: var(--gold);
+  color: var(--void);
+  border-color: var(--gold);
+}
+
+.picker-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
+  gap: 10px;
+}
+
+.slot-btn{
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--gold-dim);
+  background: rgba(14,14,18,0.7);
+  color: var(--mono-text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+.slot-btn:hover{ border-color: var(--gold-bright); box-shadow: 0 0 20px rgba(240,205,122,0.2); }
+.slot-btn:focus-visible{ outline: 2px solid var(--gold-bright); outline-offset: 3px; }
+.slot-btn.has-work{ color: var(--gold-bright); border-color: var(--gold); }
+.slot-btn.has-work::after{
+  content: '';
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  box-shadow: 0 0 6px var(--gold-bright);
+}
+.slot-btn.is-active{
+  background: var(--gold);
+  color: var(--void);
+  border-color: var(--gold);
+  box-shadow: 0 0 24px rgba(201,161,90,0.35);
+}
+
+/* ---------------- gallery slider ----------------
+   Sits in the space below the cube that scroll already
+   reveals. Boxes are sized to each picture's own aspect
+   ratio (set inline via JS once the image loads), not a
+   uniform square grid. */
+.gallery-section{
+  width: 100%;
+  max-width: 900px;
+  margin-top: 8vh;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.gallery-section.is-inview{
+  opacity: 1;
+  transform: translateY(0);
+}
+.gallery-head{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.gallery-tag{
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  padding: 4px 10px;
+  border: 1px solid var(--gold-dim);
+}
+.gallery-title{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1rem, 2.4vw, 1.3rem);
+  color: var(--ink);
+}
+.gallery-track{
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 6px 6px 18px;
+  scroll-snap-type: x proximity;
+  justify-content: flex-start;
+}
+.gallery-track::-webkit-scrollbar{ height: 6px; }
+.gallery-track::-webkit-scrollbar-thumb{ background: var(--gold-dim); border-radius: 999px; }
+.gallery-box{
+  flex: 0 0 auto;
+  height: 220px;
+  aspect-ratio: 4 / 3; /* overwritten per-image once its real size loads */
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--gold-dim);
+  scroll-snap-align: start;
+  background: var(--charcoal);
+}
+.gallery-box img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.gallery-empty{
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--mono-text);
+  line-height: 1.7;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+@media (max-width: 720px){
+  :root{ --edge: 16px; }
+  .cube-stage{ padding-top: 44vh; gap: 24px; }
+  .picker-grid{ grid-template-columns: repeat(3, 38px); grid-template-rows: repeat(3, 38px); gap: 8px; }
+  .slot-btn{ width: 38px; height: 38px; font-size: 10px; }
+  .hud-corner{ font-size: 9px; padding: 6px 10px; letter-spacing: 0.12em; }
+  .gallery-box{ height: 160px; }
+}
+
+/* ===================================================
+   MOBILE — free-drag cube + tap overlay (< 900px)
+   Desktop keeps the face-tab keypad above untouched;
+   these rules only bite under the breakpoint.
+=================================================== */
+
+/* Base state for every mobile-only element: hidden everywhere
+   by default, only ever shown inside the mobile media query
+   below, and even then gated by its own .is-open/.is-visible
+   toggle from cube.js. */
+.mobile-help-btn,
+.mobile-close-btn,
+.mobile-immovable,
+.mobile-sheet,
+.mobile-toast,
+.mobile-help-sheet{
+  display: none;
+}
+
+@media (max-width: 899px){
+  /* No keypad on mobile — selection happens by tapping the cube
+     itself. The old scroll-revealed gallery section is replaced
+     by the per-piece sheet below, so it's hidden too. */
+  .cube-hero,
+  .cube-content,
+  .gallery-section{
+    display: none;
+  }
+  /* The whole interaction now happens on one fixed screen — drag
+     the cube, tap pieces, read the sheet — so the page itself
+     doesn't scroll on mobile at all. */
+  body{ overflow: hidden; }
+  /* Everything inside .cube-stage is hidden on mobile (see above), but
+     the element itself still spans the full viewport at z-index:2 —
+     above the canvas's z-index:0 — so without this it silently eats
+     every tap/drag meant for the cube. Nothing interactive lives
+     inside .cube-stage on mobile, so switching it off here is safe. */
+  .cube-stage{ height: 100vh; min-height: 100vh; padding: 0; overflow: hidden; pointer-events: none; }
+
+  /* The cube becomes directly touchable, and needs touch-action:none
+     so the browser doesn't try to scroll/zoom the page while a drag
+     is in progress on the canvas itself. */
+  #cube-canvas{ pointer-events: auto; touch-action: none; }
+
+  /* Free up the top-right corner for the close (✕) button — the
+     progress counter isn't meaningful once there's no keypad. */
+  .hud-tr{ display: none; }
+
+  .mobile-help-btn{
+    display: flex;
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 50; /* above both overlay layers -> always tappable */
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14,14,18,0.75);
+    border: 1px solid var(--gold-dim);
+    color: var(--gold-bright);
+    font-family: var(--font-mono);
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .mobile-close-btn.is-visible{
+    display: flex;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 60; /* topmost -> always tappable while an overlay is up */
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14,14,18,0.85);
+    border: 1px solid var(--gold);
+    color: var(--gold-bright);
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  /* Invisible on purpose — its only job is to sit above the canvas
+     (z-index 10, above the canvas' 0) and swallow taps meant for
+     the cube while a piece is open. Never moves, shows nothing. */
+  .mobile-immovable.is-open{
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: transparent;
+  }
+
+  /* Transparent scrollable sheet, stacked above the immovable layer
+     (z-index 20). Starts with a tall empty spacer above its content
+     so only a sliver peeks up from the bottom on open; scrolling it
+     slides that content up over the immovable layer, which itself
+     never shifts. Only the text/image content inside is opaque —
+     everywhere else in this layer, the cube behind stays visible. */
+  .mobile-sheet.is-open{
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: transparent;
+  }
+  .mobile-sheet-inner{
+    min-height: 132vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .mobile-sheet-spacer{
+    flex: 0 0 auto;
+    height: 70vh;
+  }
+  .mobile-sheet-content{
+    flex: 1 0 auto;
+    padding: 24px 22px 70px;
+    text-align: left;
+  }
+  .mobile-sheet-content .story-tag,
+  .mobile-sheet-content .story-title,
+  .mobile-sheet-content .story-body{
+    text-shadow: 0 2px 16px rgba(0,0,0,0.95);
+  }
+  .mobile-sheet-content .story-title{ margin-top: 12px; }
+  .mobile-sheet-content .gallery-track{ margin-top: 22px; }
+
+  .mobile-toast.is-visible{
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 70;
+    max-width: 78vw;
+    text-align: center;
+    background: rgba(10,10,12,0.94);
+    border: 1px solid var(--gold-dim);
+    border-radius: 10px;
+    padding: 16px 22px;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .mobile-help-sheet.is-open{
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(6,6,8,0.78);
+  }
+  .mobile-help-card{
+    width: 100%;
+    max-width: 360px;
+    background: #0e0e12;
+    border: 1px solid var(--gold-dim);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .mobile-help-card h3{
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--gold-bright);
+    margin-bottom: 16px;
+  }
+  .mobile-help-card ul{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-bottom: 20px;
+  }
+  .mobile-help-card li{
+    position: relative;
+    padding-left: 16px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--mono-text);
+  }
+  .mobile-help-card li::before{
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+  .mobile-help-close{
+    width: 100%;
+    padding: 11px;
+    border-radius: 8px;
+    border: 1px solid var(--gold);
+    background: var(--gold);
+    color: var(--void);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+  }
+}
